@@ -1,93 +1,79 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Widgets Demo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Basic Flutter Widgets'),
+      title: 'Form Example',
+      home: const FormPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
+class FormPage extends StatefulWidget {
+  const FormPage({super.key});
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<FormPage> createState() => _FormPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _FormPageState extends State<FormPage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(title: const Text('Form Validation')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // 🔸 Text Widget
-            const Text(
-              'Hello Akshay 👋',
-              style: TextStyle(fontSize: 24, color: Colors.red),
-            ),
-
-            const SizedBox(height: 20),
-
-            // 🔸 Container Widget
-            Container(
-              width: 150,
-              height: 100,
-              color: Colors.blueAccent,
-              alignment: Alignment.center,
-              child: const Text(
-                'Inside Container',
-                style: TextStyle(color: Colors.white),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is required';
+                  } else if (!value.contains('@')) {
+                    return 'Enter a valid email';
+                  }
+                  return null;
+                },
               ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // 🔸 Row Widget
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
-                Icon(Icons.home, color: Colors.deepPurple),
-                Icon(Icons.star, color: Colors.amber),
-                Icon(Icons.settings, color: Colors.grey),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            // 🔸 Stack Widget
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(width: 150, height: 150, color: Colors.green),
-                Container(width: 100, height: 100, color: Colors.yellow),
-                const Text('Stacked', style: TextStyle(fontWeight: FontWeight.bold)),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            // 🔸 Image Widget
-            Image.network(
-              'https://flutter.dev/images/flutter-logo-sharing.png',
-              height: 80,
-            ),
-          ],
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(labelText: 'Password'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password is required';
+                  } else if (value.length < 6) {
+                    return 'Minimum 6 characters';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Login Successful')),
+                    );
+                  }
+                },
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ),
     );
