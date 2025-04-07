@@ -9,92 +9,75 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Layout Widgets Demo',
+      title: 'Gesture Demo',
       debugShowCheckedModeBanner: false,
-      home: const LayoutDemo(),
+      home: const GestureDemo(),
     );
   }
 }
 
-class LayoutDemo extends StatelessWidget {
-  const LayoutDemo({super.key});
+class GestureDemo extends StatefulWidget {
+  const GestureDemo({super.key});
+  @override
+  State<GestureDemo> createState() => _GestureDemoState();
+}
+
+class _GestureDemoState extends State<GestureDemo> {
+  String _message = "Try tapping or swiping!";
+
+  void _updateMessage(String text) {
+    setState(() {
+      _message = text;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Responsive width and height using MediaQuery
-    double screenWidth = MediaQuery.of(context).size.width;
-    double boxWidth = screenWidth * 0.5;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Layout Widgets & Responsive UI'),
+        title: const Text("GestureDetector & InkWell Demo"),
         backgroundColor: Colors.deepPurple,
       ),
       body: Column(
         children: [
-          // Padding + Center
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(
-              child: Text(
-                'Hello Akshay 👋',
-                style: TextStyle(fontSize: 24, color: Colors.red),
-              ),
+          const SizedBox(height: 30),
+
+          Center(child: Text(_message, style: const TextStyle(fontSize: 20))),
+
+          const SizedBox(height: 30),
+
+          // 🔹 GestureDetector Example
+          GestureDetector(
+            onTap: () => _updateMessage("🖐️ You tapped the box!"),
+            onDoubleTap: () => _updateMessage("👏 Double Tap!"),
+            onLongPress: () => _updateMessage("⏳ Long Pressed!"),
+            onHorizontalDragEnd: (_) => _updateMessage("➡️ Swiped horizontally!"),
+            child: Container(
+              width: 200,
+              height: 100,
+              color: Colors.blueAccent,
+              alignment: Alignment.center,
+              child: const Text("GestureDetector Box", style: TextStyle(color: Colors.white)),
             ),
           ),
 
-          // Align widget
-          const Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: EdgeInsets.only(right: 16),
-              child: Text("Right Aligned"),
-            ),
-          ),
+          const SizedBox(height: 40),
 
-          const SizedBox(height: 10),
-
-          // Responsive Container using MediaQuery
-          Container(
-            width: boxWidth,
-            height: 80,
-            color: Colors.blue,
-            alignment: Alignment.center,
-            child: const Text(
-              '50% Width Container',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Row with Expanded widgets
-          Row(
-            children: [
-              Expanded(
-                child: Container(height: 60, color: Colors.purple),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Container(height: 60, color: Colors.orange),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
-
-          // ListView in Expanded
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(10),
-              children: List.generate(
-                5,
-                (index) => Container(
-                  padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.only(bottom: 10),
-                  color: Colors.grey.shade300,
-                  child: Text('List Item ${index + 1}'),
+          // 🔸 InkWell Example
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => _updateMessage("✨ InkWell tapped!"),
+              splashColor: Colors.purple.withOpacity(0.3),
+              child: Container(
+                width: 200,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.amber,
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                alignment: Alignment.center,
+                child: const Text("InkWell Widget"),
               ),
             ),
           ),
